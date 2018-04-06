@@ -1,0 +1,474 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <style type="text/css">
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
+
+        #allmap {
+            height: 500px;
+            width: 100%;
+        }
+
+        #r-result {
+            width: 100%;
+            font-size: 14px;
+        }
+    </style>
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/api?v=2.0&ak=ZoVI4xGMAlZnYzG7qAQmHrFcoCan9Tpw"></script>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .P1 {
+            position: fixed;
+            top: 523px;
+            left: 50%;
+            z-index: 100;
+        }
+
+        .P2 {
+            position: fixed;
+            top: 65px;
+            left: 50%;
+            z-index: 100;
+        }
+
+        .P3 {
+            position: fixed;
+            top: 520px;
+            left: 95%;
+            z-index: 100;
+        }
+    </style>
+    <title>城市名定位</title>
+</head>
+<body>
+<h1 style="text-align: center">地图</h1>
+<img class="P1" style="width: 40px;height: 40px"
+     src="http://img1.ph.126.net/7MABTH_K_vVABnm2Jc4ZVA==/6632651062444674166.jpg" onclick="tiaozhuan()"/>
+<img class="P2" style="width: 40px;height: 40px"
+     src="http://img0.ph.126.net/hqdQ1xzEp5B7NH6ebtKV2Q==/6608206719936214539.jpg">
+<img class="P3" style="width: 40px;height: 40px"
+     src="http://img1.ph.126.net/TuH0N7-HGGntKsspCdvUbw==/6631679094167785732.jpg" onclick="tiaozhuan3()"/>
+<div id="allmap"></div>
+<div id="r-result" style="text-align: center">
+    <br>
+    地址: &nbsp; <input id="cityName" type="text" style="width:100px; margin-right:10px;"/>
+    &nbsp;<input type="button" value="查询" onclick="theLocation()"/>&nbsp;&nbsp;
+    经度: <input type="text" id="jd"/>&nbsp;&nbsp;
+    纬度: <input type="text" id="wd"/> &nbsp;&nbsp;&nbsp;
+</div>
+<div id="tags" style="text-align: center">
+    <br>
+    标签描述：<input id="name" type="text" name="name"/>&nbsp;<button onclick="addTag()">添加标签</button>
+</div>
+<div id=win style="display:none; POSITION:fixed; left:1010px; top:420px; width:100px; height:100px; margin-left:-300px;
+     margin-top:-200px; border:0px solid #888;  text-align:center;z-index: 101;">
+    <table border="1" cellpadding="3" cellspacing="0" style="width: 60%;margin:auto">
+        <tr>
+            <td style="background-color:#FF00FF" onclick="tiaozhuan2()">房屋租售</td>
+        </tr>
+        <tr>
+            <td style="background-color:#FF00FF">应聘招聘</td>
+        </tr>
+        <tr>
+            <td style="background-color:#FF00FF">出行</td>
+        </tr>
+        <tr>
+            <td style="background-color:#FF00FF">订餐</td>
+        </tr>
+        <tr>
+            <td style="background-color:#FF00FF" onclick="closeLogin()">关闭</td>
+        </tr>
+    </table>
+</div>
+
+<div id=win2 style="display:none; POSITION:fixed; left:1010px; top:420px; width:100px; height:100px; margin-left:-300px;
+     margin-top:-200px; border:0px solid #888;  text-align:center;z-index: 101;">
+    <table border="1" cellpadding="3" cellspacing="0" style="width: 60%;margin:auto">
+        <tr>
+            <td style="background-color:#FF00FF" onclick="zhizu()">房东直租</td>
+        </tr>
+        <tr>
+            <td style="background-color:#FF00FF" onclick="zhuanzu()">房客转租</td>
+        </tr>
+        <tr>
+            <td style="background-color:#FF00FF">中介代租</td>
+        </tr>
+        <tr>
+            <td style="background-color:#FF00FF">房客找租</td>
+        </tr>
+        <tr>
+            <td style="background-color:#FF00FF" onclick="closeLogin2()">关闭</td>
+        </tr>
+    </table>
+</div>
+
+<div id=win3 style="display:none; POSITION:fixed; left:950px; top:340px; width:100px; height:100px; margin-left:-300px;
+     margin-top:-200px; border:0px solid #888;  text-align:center;z-index: 101;">
+    <form id="demo">
+        <table id="demo2" border="1" cellpadding="3" cellspacing="0" style="width: 100%;margin:auto">
+            <tr>
+                <td style="background-color:#FF00FF">地址</td>
+                <td style="background-color:#FF00FF"><input id="address" name="address" type="text"/></td>
+            </tr>
+            <tr>
+                <td style="background-color:#FF00FF">房屋类型</td>
+                <td style="background-color:#FF00FF"><input name="type" type="text"/></td>
+            </tr>
+            <tr>
+                <td style="background-color:#FF00FF">小区号</td>
+                <td style="background-color:#FF00FF"><input name="depart" type="text"/></td>
+            </tr>
+            <tr>
+                <td style="background-color:#FF00FF">楼号</td>
+                <td style="background-color:#FF00FF"><input name="floor" type="text"/></td>
+            </tr>
+            <tr>
+                <td style="background-color:#FF00FF">房间号</td>
+                <td style="background-color:#FF00FF"><input name="room" type="text"/></td>
+            </tr>
+            <tr>
+                <td style="background-color:#FF00FF">装修类型</td>
+                <td style="background-color:#FF00FF"><input name="decorate" type="text"/></td>
+            </tr>
+            <tr>
+                <td style="background-color:#FF00FF" onclick="tijiao()"><span>确认</span></td>
+                <td style="background-color:#FF00FF" onclick="closeLogin3()"><span>取消</span></td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    var markerArr = [];
+    var markerArrBak = [];
+    var urlZhuanzu="http://img1.ph.126.net/MouFg0sLQ0OzTuU42rQN3Q==/6608255098447554619.jpg";
+    var urlZhizu="http://img2.ph.126.net/_rl7YfbZGQSA2dF2jnyUSQ==/6597819633588866102.jpg";
+    var urlIcon = urlZhuanzu;
+    var strs;
+    var cityName;
+    var url = window.location.search;
+    if (url.indexOf("?") != -1) {  //判断是否有参数
+        var str = url.substr(1); //从第一个字符开始 因为第0个是?号 获取所有除问号的所有符串
+        strs = str.split("=");  //用等号进行分隔 （因为知道只有一个参数 所以直接用等号进分隔 如果有多个参数 要用&号分隔 再用等号进行分隔）
+    }
+    if(strs == null)
+    {
+        cityName="上海";
+    }else {
+        cityName = strs[1]
+    }
+    document.getElementById("cityName").value = cityName;
+
+    $("#tags").hide();
+    var wd;
+    var jd;
+
+    // 百度地图API功能
+    var map = new BMap.Map("allmap");
+    map.centerAndZoom('上海', 17);
+    map.addEventListener("click", function (e) {
+        wd = e.point.lng;
+        jd = e.point.lat;
+        var input = document.getElementById('wd');
+        var input2 = document.getElementById('jd');
+        input.value = wd;
+        input2.value = jd;
+    });
+
+//    map.addControl(new BMap.NavigationControl());
+
+    setMapEvent();//设置地图事件
+    addMapControl();//向地图添加控件
+
+    var local = new BMap.LocalSearch(map, {
+        renderOptions: {map: map}
+    });
+
+    //标注点数组
+    //    var markerArr = [{title:"中介代租",content:"我的备注",point:"121.618106|31.083781",isOpen:0,icon:{w:23,h:25,l:23,t:21,x:9,lb:12}}
+    //        ,{title:"房东直租",content:"我的备注",point:"121.612726|31.08368",isOpen:0,icon:{w:23,h:25,l:23,t:21,x:9,lb:12}}
+    //        ,{title:"房客转租",content:"我的备注",point:"121.615609|31.083765",isOpen:0,icon:{w:23,h:25,l:23,t:21,x:9,lb:12}}
+    //        ,{title:"房客找租",content:"我的备注",point:"121.620262|31.083734",isOpen:0,icon:{w:23,h:25,l:0,t:21,x:9,lb:12}},
+    //        {title:"中介代租",content:"我的备注",point:"121.618106|31.086781",isOpen:0,icon:{w:23,h:25,l:23,t:21,x:9,lb:12}}
+    //        ,{title:"房东直租",content:"我的备注",point:"121.612726|31.08668",isOpen:0,icon:{w:23,h:25,l:23,t:21,x:9,lb:12}}
+    //        ,{title:"房客转租",content:"我的备注",point:"121.615609|31.086765",isOpen:0,icon:{w:23,h:25,l:23,t:21,x:9,lb:12}}
+    //        ,{title:"房客找租",content:"我的备注",point:"121.620262|31.086734",isOpen:0,icon:{w:23,h:25,l:0,t:21,x:9,lb:12}}
+    //    ];
+
+    //    var markerArr=[{title:"房东直租",content:"我的备注",point:"121.612726|31.08668",isOpen:0,icon:{w:23,h:25,l:23,t:21,x:9,lb:12}}
+    //        ,{title:"房东直租",content:"我的备注",point:"121.612726|31.08368",isOpen:0,icon:{w:23,h:25,l:23,t:21,x:9,lb:12}}
+    //    ];
+
+    function tijiao() {
+        var address = "上海昱星家园东区";
+        var addr2 = document.getElementById("address").value;
+        if (addr2 != null && addr2 != "") {
+            address = addr2;
+        }
+//        var url = "http://localhost:8070/addDemo";
+//        $.ajax({
+//            type: "POST",
+//            url: url,
+//            data: $("#demo").serialize(),
+//            success: function (data) {
+//                if(data.code == 500)
+//                {
+//                }
+//                if(data.code == 200)
+//                {
+//                }
+//            }
+//        });
+        alert('提交成功！');
+        closeLogin3();
+        document.getElementById("cityName").value = address;
+        theLocation();
+        $("#tags").show();
+        markerArr = markerArrBak;
+        initMap();
+    }
+
+    function tiaozhuan() {
+        openLogin();
+    }
+
+    function openLogin() {
+        document.getElementById("win").style.display = "";
+    }
+
+    function closeLogin() {
+        document.getElementById("win").style.display = "none";
+    }
+
+    function tiaozhuan2() {
+        closeLogin();
+        openLogin2();
+    }
+
+    function openLogin2() {
+        document.getElementById("win2").style.display = "";
+    }
+
+    function closeLogin2() {
+        document.getElementById("win2").style.display = "none";
+    }
+
+    function tiaozhuan3() {
+        closeLogin();
+        openLogin3();
+    }
+
+    function openLogin3() {
+        document.getElementById("win3").style.display = "";
+    }
+
+    function closeLogin3() {
+        document.getElementById("win3").style.display = "none";
+    }
+
+    function zhizu()
+    {
+        closeLogin2();
+        var markerArrTmp =[];
+        for(var i=0;i<markerArrBak.length;i++)
+        {
+            if(markerArrBak[i]['title'] == "直租")
+            {
+                markerArrTmp.push(markerArrBak[i]);
+            }
+        }
+        markerArr = markerArrTmp;
+        initMap();
+    }
+    function zhuanzu()
+    {
+        closeLogin2();
+        var markerArrTmp =[];
+        for(var i=0;i<markerArrBak.length;i++)
+        {
+            if(markerArrBak[i]['title'] == "转租")
+            {
+                markerArrTmp.push(markerArrBak[i]);
+            }
+        }
+        markerArr = markerArrTmp;
+        initMap();
+    }
+
+    function addTag() {
+        var name = document.getElementById("name").value;
+        var tag = {
+            title: name,
+            content: name,
+            point: wd + "|" + jd,
+            isOpen: 0,
+            icon: {w: 23, h: 25, l: 23, t: 21, x: 9, lb: 12}
+        };
+        markerArr.push(tag);
+        markerArrBak.push(tag);
+
+        if(tag['title'] == "转租")
+        {
+            urlIcon=urlZhuanzu;
+        }
+        if(tag['title'] == "直租")
+        {
+            urlIcon=urlZhizu;
+        }
+
+        initMap();
+        $("#tags").hide();
+    }
+
+    function theLocation() {
+        var city = document.getElementById("cityName").value;
+        if (city == null | city == "") {
+            city = "上海";
+        }
+        if (city != "") {
+            local.search(city);
+        }
+    }
+
+    //        ====================地图函数 START=============================
+    //创建和初始化地图函数：
+    function initMap() {
+        createMap();//创建地图
+        setMapEvent();//设置地图事件
+        addMapControl();//向地图添加控件
+        addMarker();//向地图中添加marker
+    }
+
+    //创建地图函数：
+    function createMap() {
+        map = new BMap.Map("allmap");//在百度地图容器中创建一个地图
+        var point = new BMap.Point(wd, jd);//定义一个中心点坐标
+        if(wd != null && jd != null)
+        {
+            map.centerAndZoom(point, 17);//设定地图的中心点和坐标并将地图显示在地图容器中
+        }
+        else
+        {
+            map.centerAndZoom('上海', 17);
+        }
+        window.map = map;//将map变量存储在全局
+        map.addEventListener("click", function (e) {
+            wd = e.point.lng;
+            jd = e.point.lat;
+            var input = document.getElementById('wd');
+            var input2 = document.getElementById('jd');
+            input.value = wd;
+            input2.value = jd;
+        });
+
+//        map.addControl(new BMap.NavigationControl());
+        local = new BMap.LocalSearch(map, {
+            renderOptions: {map: map}
+        });
+    }
+
+    //地图事件设置函数：
+    function setMapEvent() {
+        map.enableDragging();//启用地图拖拽事件，默认启用(可不写)
+        map.enableScrollWheelZoom();//启用地图滚轮放大缩小
+        map.enableDoubleClickZoom();//启用鼠标双击放大，默认启用(可不写)
+        map.enableKeyboard();//启用键盘上下左右键移动地图
+    }
+
+    //地图控件添加函数：
+    function addMapControl() {
+        //向地图中添加缩放控件
+//        var ctrl_nav = new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_LEFT, type: BMAP_NAVIGATION_CONTROL_LARGE});
+//        map.addControl(ctrl_nav);
+        //向地图中添加缩略图控件
+//        var ctrl_ove = new BMap.OverviewMapControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT, isOpen: 1});
+//        map.addControl(ctrl_ove);
+        //向地图中添加比例尺控件
+//        var ctrl_sca = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
+//        map.addControl(ctrl_sca);
+    }
+
+    //创建marker
+    function addMarker() {
+        for (var i = 0; i < markerArr.length; i++) {
+            var json = markerArr[i];
+            var p0 = json.point.split("|")[0];
+            var p1 = json.point.split("|")[1];
+
+            if(json['title'] == "转租")
+            {
+                urlIcon=urlZhuanzu;
+            }
+            if(json['title'] == "直租")
+            {
+                urlIcon=urlZhizu;
+            }
+
+            var myIcon = new BMap.Icon(urlIcon, new BMap.Size(70, 40));
+
+            var point = new BMap.Point(p0, p1);
+            var iconImg = createIcon(json.icon);
+            var marker = new BMap.Marker(point, {icon: myIcon});
+            var iw = createInfoWindow(i);
+            var label = new BMap.Label(json.title, {"offset": new BMap.Size(json.icon.lb - json.icon.x + 10, -20)});
+            marker.setLabel(label);
+            map.addOverlay(marker);
+            label.setStyle({
+                borderColor: "#808080",
+                color: "#333",
+                cursor: "pointer"
+            });
+
+            (function () {
+                var index = i;
+                var _iw = createInfoWindow(i);
+                var _marker = marker;
+                _marker.addEventListener("click", function () {
+                    this.openInfoWindow(_iw);
+                });
+                _iw.addEventListener("open", function () {
+                    _marker.getLabel().hide();
+                })
+                _iw.addEventListener("close", function () {
+                    _marker.getLabel().show();
+                })
+                label.addEventListener("click", function () {
+                    _marker.openInfoWindow(_iw);
+                })
+                if (!!json.isOpen) {
+                    label.hide();
+                    _marker.openInfoWindow(_iw);
+                }
+            })()
+        }
+    }
+
+    //创建InfoWindow
+    function createInfoWindow(i) {
+        var json = markerArr[i];
+        var iw = new BMap.InfoWindow("<b class='iw_poi_title' title='" + json.title + "'>" + json.title + "</b><div class='iw_poi_content'>" + json.content + "</div>");
+        return iw;
+    }
+
+    //创建一个Icon
+    function createIcon(json) {
+        var icon = new BMap.Icon("http://app.baidu.com/map/images/us_mk_icon.png", new BMap.Size(json.w, json.h), {
+            imageOffset: new BMap.Size(-json.l, -json.t),
+            infoWindowOffset: new BMap.Size(json.lb + 5, 1),
+            offset: new BMap.Size(json.x, json.h)
+        })
+        return icon;
+    }
+</script>
